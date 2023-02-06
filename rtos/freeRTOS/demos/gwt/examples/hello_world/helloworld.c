@@ -2,6 +2,7 @@
  * Hello world example running on GWT processors(GAP8, GAP9) using single core.
  */
 
+/* Modifying for MPU funuctionality */
 /* PMSIS includes */
 #include "pmsis.h"
 
