@@ -70,5 +70,17 @@
 #define PI_L1              PI_CL_L1
 #define FC_L1_MEM          PI_FC_L1
 
+/* API section */
+#define API_CODE		__attribute__((section(".api.code")))
+
+/* Task Specific sections */
+#define TASK1_CODE		__attribute__((section(".taskone.code")))
+#define TASK1_DATA		__attribute__((section(".taskone.data")))
+
+#define TASK2_CODE		__attribute__((section(".tasktwo.code")))
+#define TASK2_DATA		__attribute__((section(".tasktwo.data")))
+
+
+
 
 #endif  /* __CORE_GAP_COMMON_H */

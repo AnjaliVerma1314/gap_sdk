@@ -775,7 +775,12 @@
 #endif
 
 #ifndef portPRIVILEGE_BIT
-    #define portPRIVILEGE_BIT    ( ( UBaseType_t ) 0x00 )
+	#ifndef portUSING_MPU_WRAPPERS
+		#define portPRIVILEGE_BIT    ( ( UBaseType_t ) 0x00 ) 
+	#else
+/* The value of portPRIVILEGE_BIT parameter should always be greater than configMAX_PRIORITIES */
+     		#define portPRIVILEGE_BIT    ( ( UBaseType_t ) 0x10 )
+     	#endif
 #endif
 
 #ifndef portYIELD_WITHIN_API
@@ -1165,7 +1170,7 @@ typedef struct xSTATIC_TCB
 {
     void * pxDummy1;
     #if ( portUSING_MPU_WRAPPERS == 1 )
-        xMPU_SETTINGS xDummy2;
+        uint32_t xDummy2;
     #endif
     StaticListItem_t xDummy3[ 2 ];
     UBaseType_t uxDummy5;

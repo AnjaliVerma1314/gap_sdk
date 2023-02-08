@@ -226,7 +226,7 @@ int pmsis_event_kernel_init(struct pmsis_event_kernel_wrap **wrap,
     event_kernel_wrap->__os_native_task = pmsis_task_create(event_kernel_entry,
             event_kernel_wrap,
             g_event_kernel_name_s,
-            PMSIS_TASK_EVENT_KERNEL_PRIORITY);
+            (portPRIVILEGE_BIT | PMSIS_TASK_EVENT_KERNEL_PRIORITY));
 
     if(!event_kernel_wrap->__os_native_task)
     {

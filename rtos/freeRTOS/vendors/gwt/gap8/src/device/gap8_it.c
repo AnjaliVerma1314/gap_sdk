@@ -38,6 +38,8 @@ const void *_ecall_vector[NB_ECALL] = {
     &_isr_default,
     &_procid,
     &_clusterid,
+    &_raise_priv, 
+    &_reset_priv,
 };
 
 
@@ -110,6 +112,15 @@ uint32_t clusterid( void )
     return syscall( ECALL_CLUSTERID, 0, 0, 0, 0 );
 }
 
+API_CODE uint32_t raise_priv ( void )
+{
+    return syscall( ECALL_RAISEPRIV, 0, 0, 0, 0 );
+}
+
+API_CODE uint32_t reset_priv ( void )
+{
+    return syscall( ECALL_RESETPRIV, 0, 0, 0, 0 );
+}
 
 
 /*****************
@@ -134,7 +145,26 @@ uint32_t _clusterid( void )
     return ( ulCluster );
 }
 
+/* Raise privilege */
+uint32_t _raise_priv(void)
+{
+	uint32_t mstatus = 0;
+	mstatus = 0x1880 ;
+	
+	__asm__ volatile("csrw mstatus, %0" :: "r"(mstatus));
+	
+	return mstatus;
+	
+}
+/* Reset privilege */
+uint32_t _reset_priv(void)
+{
 
+	uint32_t mstatus = 0x90; 
+	__asm__ volatile("csrw mstatus, %0" :: "r"(mstatus));
+	
+	return mstatus;
+}
 
 /****************
  * ISR.

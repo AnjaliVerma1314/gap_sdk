@@ -43,6 +43,8 @@ extern "C" {
  *-----------------------------------------------------------
  */
 
+#define portUSING_MPU_WRAPPERS (1)
+
 /* Type definitions. */
 #define portSTACK_TYPE  uint32_t
 #define portBASE_TYPE   int32_t

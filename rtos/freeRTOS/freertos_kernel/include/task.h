@@ -118,11 +118,17 @@ typedef struct xTIME_OUT
  */
 typedef struct xMEMORY_REGION
 {
-    void * pvBaseAddress;
-    uint32_t ulLengthInBytes;
+  //  void * pvBaseAddress;
+  //  uint32_t ulLengthInBytes;
     uint32_t ulParameters;
 } MemoryRegion_t;
 
+ #if ( portUSING_MPU_WRAPPERS == 1 )
+ struct xMPU_SETTINGS
+ {
+ 	uint32_t ulrule;
+ };
+ 
 /*
  * Parameters required to create an MPU protected task.
  */
@@ -136,9 +142,11 @@ typedef struct xTASK_PARAMETERS
     StackType_t * puxStackBuffer;
     MemoryRegion_t xRegions[ portNUM_CONFIGURABLE_REGIONS ];
     #if ( ( portUSING_MPU_WRAPPERS == 1 ) && ( configSUPPORT_STATIC_ALLOCATION == 1 ) )
-        StaticTask_t * const pxTaskBuffer;
+        StaticTask_t * pxTaskBuffer;
     #endif
 } TaskParameters_t;
+
+#endif
 
 /* Used with the uxTaskGetSystemState() function to return the state of each task
  * in the system. */

@@ -48,11 +48,13 @@ extern "C" {
 /* Exported macro ------------------------------------------------------------*/
 #define NB_CAUSE ( 0x20 )
 #define NB_ISR ( 0x20 )
-#define NB_ECALL ( 0x03 )
+#define NB_ECALL ( 0x05 )
 
 #define ECALL_EXIT ( 0x00 )
 #define ECALL_PROCID ( 0x01 )
 #define ECALL_CLUSTERID ( 0x02 )
+#define ECALL_RAISEPRIV (0x03)
+#define ECALL_RESETPRIV (0x04)
 
 /* Exported functions ------------------------------------------------------- */
 /* Mandatory handlers(from FreeRTOS). */
@@ -61,11 +63,16 @@ void HardFault_Handler( void );
 /* Ecalls. */
 uint32_t procid( void );
 uint32_t clusterid( void );
+uint32_t getpriv(void);
+uint32_t raisepriv(void);
+uint32_t resetpriv(void);
 
 /* Internal functions. */
 uint32_t _procid( void );
 uint32_t _clusterid( void );
 void _isr_default( void );
+uint32_t _raise_priv(void);
+uint32_t _reset_priv(void);
 
 void vSetPendSV();
 #ifdef __cplusplus

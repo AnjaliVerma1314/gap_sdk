@@ -145,6 +145,7 @@
         jal ra, ASM_FUNC_SAVE_CSR_CONTEXT
         lw tp, pxCurrentTCB
         lw sp, 0*0(tp)
+        jal ra, ASM_FUNC_RESTORE_MPU_CONTEXT
         jal ra, ASM_FUNC_RESTORE_CSR_CONTEXT
         jal ra, ASM_FUNC_RESTORE_SAVE_CONTEXT
         jal ra, ASM_FUNC_RESTORE_MINIMAL_CONTEXT
@@ -185,6 +186,7 @@ _no_switch_pendsv:
         jal ra, ASM_FUNC_SAVE_CSR_CONTEXT
         lw tp, pxCurrentTCB
         lw sp, 0*0(tp)
+        jal ra, ASM_FUNC_RESTORE_MPU_CONTEXT
         jal ra, ASM_FUNC_RESTORE_CSR_CONTEXT
         jal ra, ASM_FUNC_RESTORE_SAVE_CONTEXT
         jal ra, ASM_FUNC_RESTORE_MINIMAL_CONTEXT

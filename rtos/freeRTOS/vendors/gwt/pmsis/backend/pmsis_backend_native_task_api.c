@@ -2,6 +2,8 @@
 #include "pmsis.h"
 #include "driver/gap_io.h"
 
+/* AV : Test Code */
+TASK1_DATA TaskHandle_t maintask;
 
 void pi_task_timer_enqueue(struct pi_task *task, uint32_t delay_us);
 
@@ -12,16 +14,19 @@ int __os_native_kickoff(void *arg)
 {
     BaseType_t xTask;
     TaskHandle_t xHandler0 = NULL;
-
-    uint32_t stack_size = (uint32_t) MAIN_APP_STACK_SIZE;
+	
+    uint32_t stack_size = (uint32_t) (MAIN_APP_STACK_SIZE);
     stack_size /= sizeof(configSTACK_DEPTH_TYPE);
     xTask = xTaskCreate(arg, "main", stack_size,
-                        NULL, tskIDLE_PRIORITY + 1, &xHandler0);
+                        NULL, ((tskIDLE_PRIORITY + 3)|portPRIVILEGE_BIT), &xHandler0);
     if (xTask != pdPASS)
     {
         printf("main is NULL !\n");
         pmsis_exit(-4321);
     }
+
+	/* AV : Test Code */
+	maintask = xHandler0;
 
     /* Enable IRQ for context switch. */
     NVIC_EnableIRQ(PENDSV_IRQN);

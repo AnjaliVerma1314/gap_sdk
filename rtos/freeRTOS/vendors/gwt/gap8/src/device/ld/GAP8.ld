@@ -117,6 +117,55 @@ SECTIONS
         KEEP(*(.vectors_irq))
     } > L2
 
+ 	/* Added by AV - API memory region */
+	.apimem : {
+	. =  ALIGN(64);
+	__apimemstart = .;
+	PROVIDE(api_mem_start = .);
+	*(.api.code*);
+	. =  ALIGN(64);
+	__apimemend = .;
+	PROVIDE(api_mem_end = .);
+	} > L2
+ 
+  
+ 	/* Added by AV - Task 1 memory region */
+	.taskone : {
+	. =  ALIGN(64);
+	__taskonetextstart = .;
+	PROVIDE(task_one_code_start = .);
+	*(.taskone.code*);
+	. =  ALIGN(64);
+	__taskonetextend = .;
+	PROVIDE(task_one_code_end = .);
+	__taskonedatastart = .;
+	PROVIDE(task_one_data_start = .);
+	*(.taskone.data*);
+	. =  ALIGN(64);
+	__taskonedataend = .;	
+	PROVIDE(task_one_data_end = .);
+	} > L2
+	
+
+	
+   	/* Added by AV - Task 2 memory region */
+	.tasktwo : {
+	. =  ALIGN(64);
+	__tasktwotextstart = .;
+	PROVIDE(task_two_code_start = .);
+	*(.tasktwo.code*);
+	. =  ALIGN(64);
+	__tasktwotextend = .;
+	PROVIDE(task_two_code_end = .);
+	__tasktwodatastart = .;
+	PROVIDE(task_two_data_start = .);
+	*(.tasktwo.data*);
+	. =  ALIGN(64);
+	__tasktwodataend = .;	
+	PROVIDE(task_two_data_end = .);
+	} > L2
+
+
     /* This section holds code of program. */
     .text : {
         . = ALIGN(4);

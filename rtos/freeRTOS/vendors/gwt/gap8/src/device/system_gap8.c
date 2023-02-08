@@ -62,6 +62,8 @@ void system_init(void)
     pi_fc_event_handler_init(FC_SOC_EVENT_IRQN);
     /* Enable IRQ for SW IRQ, SuperVisor call. */
     NVIC_EnableIRQ(PENDSV_IRQN);
+    
+    NVIC_EnableIRQ(FC_IRQ_MPU_ERROR);
 
     /* PMU Init */
     __pi_pmu_init();
@@ -76,6 +78,12 @@ void system_init(void)
     #if defined(PRINTF_UART)
     printf_uart_init(0);
     #endif  /* PRINTF_UART */
+    
+    #if (portUSING_MPU_WRAPPERS == 1)
+    prvSetupMPU();
+    #endif
+    
+    
 }
 
 void system_setup_systick(uint32_t tick_rate_hz)
@@ -89,7 +97,7 @@ void system_setup_systick(uint32_t tick_rate_hz)
     cfg.field.mode = 1;
     /* Start the timer by putting a CMP value. */
     uint32_t cmp_val = ((SystemCoreClock / tick_rate) - 1);
-    pi_timer_init(SYS_TIMER, cfg, cmp_val);
+    pi_timer_init(SYS_TIMER, cfg, cmp_val);   
     /* Enable IRQ from Systick timer. */
     NVIC_EnableIRQ(SYSTICK_IRQN);
 }
@@ -147,7 +155,7 @@ void system_usermode_entry(void *arg)
 
     void (*task_func)(void*) = task_arg->entry;
     void *__arg = task_arg->arg;
-    pi_fc_l1_free(task_arg, sizeof(pi_user_task_arg_t));
+  //  pi_fc_l1_free(task_arg, sizeof(pi_user_task_arg_t)); Commented by AV -because this was creating illegal instruction exception when user task was executed.
     hal_compiler_barrier();
     /* Go to user mode - Drop our privileges */
     // FIXME: syscall( ECALL_PRIV_DROP, 0, 0, 0, 0 );

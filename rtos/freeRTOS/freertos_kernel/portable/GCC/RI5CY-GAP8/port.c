@@ -43,6 +43,10 @@
 void prvSetupTimerInterrupt( void );
 
 #if (portUSING_MPU_WRAPPERS == 1)
+
+extern api_mem_start;
+extern api_mem_end;
+
 /* Setup MPU. */
 void prvSetupMPU( void ) PRIVILEGED_FUNCTION;
 
@@ -72,9 +76,16 @@ volatile uint32_t ulCriticalNesting = 0ul;
 
 /*-----------------------------------------------------------*/
 /* See header file for description. */
+#if (portUSING_MPU_WRAPPERS == 1)
+StackType_t *pxPortInitialiseStack( StackType_t *pxTopOfStack,
+                                    TaskFunction_t pxCode,
+                                    void *pvParameters,
+                                    BaseType_t xRunPrivileged )
+#else
 StackType_t *pxPortInitialiseStack( StackType_t *pxTopOfStack,
                                     TaskFunction_t pxCode,
                                     void *pvParameters )
+#endif                          
 {
     uint32_t stack_size = ( uint32_t ) portGAP8_FULL_CONTEXT_SIZE;
 
@@ -94,7 +105,17 @@ StackType_t *pxPortInitialiseStack( StackType_t *pxTopOfStack,
     }
     pxTopOfStack[portGAP8_REG_RA_POS] = ( StackType_t ) pxCode;                   /* RA */
     pxTopOfStack[portGAP8_REG_A0_POS] = ( StackType_t ) pvParameters;             /* A0 */
-    pxTopOfStack[portGAP8_REG_MSTATUS_POS] = ( StackType_t ) portINITIAL_MSTATUS; /* MSTATUS */
+    
+    #if (portUSING_MPU_WRAPPERS == 1)
+    if(xRunPrivileged == pdFALSE)
+    {
+       pxTopOfStack[portGAP8_REG_MSTATUS_POS] = ( StackType_t ) 0x91;	/* MSTATUS for user mode task */
+    }
+    else
+    #endif
+    { 
+    	pxTopOfStack[portGAP8_REG_MSTATUS_POS] = ( StackType_t ) portINITIAL_MSTATUS; /* MSTATUS */
+    }
     pxTopOfStack[portGAP8_REG_MEPC_POS] = ( StackType_t ) pxCode;                 /* MEPC */
 
 /*
@@ -146,27 +167,41 @@ void prvSetupTimerInterrupt( void )
 #if portUSING_MPU_WRAPPERS == 1
 void prvSetupMPU( void )
 {
+// Added by AV - 07.09.2022
+/* This function sets up one rule register : 
+1 - L2 rule 0 register to map code of wrapper functions in L2 memory.
+ */
+   uint32_t rule = 0;
+   uint32_t mem_base = 0;
+   uint32_t size = 0;
+
+   mem_base = ((uint32_t)(&api_mem_start)- 0x1c000000);
+   size =  ((uint32_t)(&api_mem_end) - (uint32_t)(&api_mem_start)) >> 6;
+	
+   rule = GAP_MPU_RULE(GAP_MPU_L2_L2_AREA, mem_base, size); 
+   GAP_MPU_SetRegion(GAP_MPU_L2_RULE, 0, rule);
 }
 /*-----------------------------------------------------------*/
 
-void vPortStoreTaskMPUSettings( xMPU_SETTINGS *xMPUSettings,
+void vPortStoreTaskMPUSettings( struct xMPU_SETTINGS *xMPUSettings,
 				const struct xMEMORY_REGION * const xRegions,
 				StackType_t *pxBottomOfStack,
 				uint32_t ulStackDepth )
 {
+	xMPUSettings->ulrule = xRegions->ulParameters;
 }
 /*-----------------------------------------------------------*/
-
+/*
 BaseType_t xPortRaisePrivilege( void )
 {
     return 1;
-}
+}*/
 /*-----------------------------------------------------------*/
 
-void vPortResetPrivilege( BaseType_t xRunningPrivileged )
+/*void vPortResetPrivilege( BaseType_t xRunningPrivileged )
 {
     ( void ) xRunningPrivileged;
-}
+} */
 #endif /* portUSING_MPU_WRAPPERS == 1 */
 /*-----------------------------------------------------------*/
 

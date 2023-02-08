@@ -135,6 +135,20 @@
         lw      t0, 28*PI_WORD_SIZE(sp)
         csrw    mstatus, t0
         .endm
+      
+        .macro RESTORE_MPU_CONTEXT
+        lw      t0, 1*PI_WORD_SIZE(tp)
+        addi	 t1, zero, 0x1b2
+        addi     t2, zero, 0x449
+        slli	t1, t1, 0x14
+        slli    t2, t2, 0x4
+        add    t1, t1, t2
+        addi   t2, zero, 0x4
+        add    t1, t1, t2
+        addi    t2, zero, 0x0
+        sw      t2, 0*0(t1)
+        sw	 t0, 0*0(t1)
+        .endm
 
         .macro RESTORE_SAVE_CONTEXT
         lw      s11, 27*PI_WORD_SIZE(sp)
@@ -209,6 +223,11 @@
 
         DECLARE ASM_FUNC_RESTORE_CSR_CONTEXT
         RESTORE_CSR_CONTEXT
+        jr ra
+        .endfunc
+        
+        DECLARE ASM_FUNC_RESTORE_MPU_CONTEXT
+        RESTORE_MPU_CONTEXT
         jr ra
         .endfunc
 

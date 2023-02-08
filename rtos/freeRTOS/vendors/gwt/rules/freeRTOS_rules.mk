@@ -40,6 +40,7 @@ chip_lowercase = $(shell echo $(chip) | tr A-Z a-z)
 FREERTOS_CONFIG_DIR = $(FREERTOS_PATH)/demos/gwt/config/$(chip_lowercase)
 FREERTOS_SOURCE_DIR = $(FREERTOS_PATH)/freertos_kernel
 PORT_DIR            = $(FREERTOS_SOURCE_DIR)/portable/GCC/RI5CY-$(chip)
+PORT_COM_DIR	     = $(FREERTOS_SOURCE_DIR)/portable/Common
 GWT_DIR             = $(FREERTOS_PATH)/vendors/gwt
 GWT_TARGET          = $(GWT_DIR)
 GWT_PMSIS           = $(GWT_TARGET)/pmsis
@@ -284,6 +285,7 @@ RTOS_SRC            = $(FREERTOS_SOURCE_DIR)/list.c \
 RTOS_SRC           += $(FREERTOS_CONFIG_DIR)/FreeRTOS_util.c
 
 PORT_SRC            = $(shell find $(PORT_DIR) -iname "*.c")
+PORTCMN_SRC            = $(shell find $(PORT_COM_DIR) -iname "*.c")
 DEVICE_SRC          = $(shell find $(GWT_DEVICE) -iname "*.c")
 DRIVER_SRC          = $(shell find $(GWT_DRIVER) -iname "*.c")
 LIBS_SRC            = $(shell find $(GWT_LIBS)/src -iname "*.c")
@@ -345,13 +347,14 @@ OPENMP_OBJ          = $(patsubst %.c, $(BUILDDIR)/%.o, $(OPENMP_SRC))
 PMSIS_OBJ           = $(patsubst %.c, $(BUILDDIR)/%.o, $(PMSIS_SRC))
 PMSIS_BACKEND_OBJ   = $(patsubst %.c, $(BUILDDIR)/%.o, $(PMSIS_BACKEND_SRC))
 PORT_OBJ            = $(patsubst %.c, $(BUILDDIR)/%.o, $(PORT_SRC))
+PORTCMN_OBJ            = $(patsubst %.c, $(BUILDDIR)/%.o, $(PORTCMN_SRC))
 PRINTF_OBJ          = $(patsubst %.c, $(BUILDDIR)/%.o, $(PRINTF_SRC))
 RTOS_OBJ            = $(patsubst %.c, $(BUILDDIR)/%.o, $(RTOS_SRC))
 
 ASM_OBJS            = $(CRT0_OBJ) $(PMSIS_ASM_OBJ) $(PORT_ASM_OBJ)
 C_OBJS              = $(API_OBJ) $(DEVICE_OBJ) $(DRIVER_OBJ) $(GAP_LIB_OBJ) \
                       $(LIBS_OBJ) $(OPENMP_OBJ) $(PMSIS_OBJ) \
-                      $(PMSIS_BACKEND_OBJ) $(PORT_OBJ) $(PRINTF_OBJ) $(RTOS_OBJ)
+                      $(PMSIS_BACKEND_OBJ) $(PORT_OBJ)  $(PORTCMN_OBJ) $(PRINTF_OBJ) $(RTOS_OBJ)
 
 # Objects to build.
 BUILDING_OBJS       = $(APP_ASM_OBJ) $(APP_OBJ) $(APP_OBJ_CXX) $(ASM_OBJS) $(C_OBJS)

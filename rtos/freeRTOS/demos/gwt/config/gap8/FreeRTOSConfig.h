@@ -91,7 +91,8 @@ extern void vPrvAssertFailed( const char *filename, uint32_t line, const char *e
 #define configUSE_DAEMON_TASK_STARTUP_HOOK        ( 0 )
 #define configCPU_CLOCK_HZ                        ( SystemCoreClock )
 #define configTICK_RATE_HZ                        ( ( TickType_t ) 1000 )
-#define configMAX_PRIORITIES                      ( 3 )
+/* Whenever configMAX_PRIORITIES is updated, portPRIVILEGE_BIT shall also be updated accordingly */
+#define configMAX_PRIORITIES                      ( 4 )
 #define configMINIMAL_STACK_SIZE                  ( ( uint16_t ) ( 128 ) )
 #define configSTACK_DEPTH_TYPE                    uint32_t
 

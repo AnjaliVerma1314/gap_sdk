@@ -255,7 +255,7 @@ typedef struct tskTaskControlBlock       /* The old naming convention is used to
     volatile StackType_t * pxTopOfStack; /*< Points to the location of the last item placed on the tasks stack.  THIS MUST BE THE FIRST MEMBER OF THE TCB STRUCT. */
 
     #if ( portUSING_MPU_WRAPPERS == 1 )
-        xMPU_SETTINGS xMPUSettings; /*< The MPU settings are defined as part of the port layer.  THIS MUST BE THE SECOND MEMBER OF THE TCB STRUCT. */
+     struct xMPU_SETTINGS xMPUSettings; /*< The MPU settings are defined as part of the port layer.  THIS MUST BE THE SECOND MEMBER OF THE TCB STRUCT. */
     #endif
 
     ListItem_t xStateListItem;                  /*< The list that the state list item of a task is reference from denotes the state of that task (Ready, Blocked, Suspended ). */
@@ -2008,10 +2008,12 @@ void vTaskStartScheduler( void )
 
             if( xIdleTaskHandle != NULL )
             {
+            
                 xReturn = pdPASS;
             }
             else
             {
+            
                 xReturn = pdFAIL;
             }
         }
@@ -2042,6 +2044,7 @@ void vTaskStartScheduler( void )
 
     if( xReturn == pdPASS )
     {
+    	
         /* freertos_tasks_c_additions_init() should only be called if the user
          * definable macro FREERTOS_TASKS_C_ADDITIONS_INIT() is defined, as that is
          * the only macro called by the function. */
@@ -2084,6 +2087,7 @@ void vTaskStartScheduler( void )
 
         /* Setting up the timer tick is hardware specific and thus in the
          * portable interface. */
+         
         if( xPortStartScheduler() != pdFALSE )
         {
             /* Should not reach here as if the scheduler is running the
